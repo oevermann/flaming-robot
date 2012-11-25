@@ -48,7 +48,7 @@ void Steuerung::keyPressEvent(QKeyEvent *event)
    if (event->key() ==  Qt::Key_W)
    {
        //hoch
-       if((left+5) < ui->graphicsView->height()-5)
+       if((left+5) < ui->graphicsView->height()-5 && (right+5) < ui->graphicsView->height()-5)
        {
            left += 5;
            right += 5;
@@ -58,7 +58,7 @@ void Steuerung::keyPressEvent(QKeyEvent *event)
    if (event->key() ==  Qt::Key_S)
    {
        //runter
-       if((left+5) > 30)
+       if((left-5) > 30 && (left-5) > 30)
        {
            left -= 5;
            right -= 5;
@@ -68,20 +68,20 @@ void Steuerung::keyPressEvent(QKeyEvent *event)
    if (event->key() ==  Qt::Key_A)
    {
        //links
-       if((right+5) < ui->graphicsView->height()-10)
+       if((left+5) < ui->graphicsView->height()-10)
        {
-           left -= 5;
-           right += 5;
+            left += 5;
+            right -= 5;
        }
    }
 
    if (event->key() ==  Qt::Key_D)
    {
        //rechts
-       if((left+5) < ui->graphicsView->height()-10)
+       if((right+5) < ui->graphicsView->height()-10)
        {
-            left += 5;
-            right -= 5;
+           left -= 5;
+           right += 5;
        }
    }
 
