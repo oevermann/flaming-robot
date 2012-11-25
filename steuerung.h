@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QKeyEvent>
+#include <QtGui>
 
 namespace Ui {
 class Steuerung;
@@ -26,8 +27,15 @@ private slots:
 
     void on_actionInfo_triggered();
 
+    void on_pushButton_7_clicked();
+
 private:
     Ui::Steuerung *ui;
+    QGraphicsScene scene;
+    int rotate;
+    int left;
+    int right;
+    void drawScene(QGraphicsScene &scene, int height, int width, int left, int right);
 };
 
 #endif // STEUERUNG_H
