@@ -138,7 +138,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_7">
+         <widget class="QPushButton" name="start">
           <property name="text">
            <string>Simulation
 Starten</string>

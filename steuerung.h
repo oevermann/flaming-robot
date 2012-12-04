@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <QKeyEvent>
 #include <QtGui>
+#include <QMutexLocker>
+#include "daten.h"
+#include "server.h"
 
 namespace Ui {
 class Steuerung;
@@ -20,22 +23,27 @@ public:
 
 private slots:
     void on_actionVerbindung_triggered();
-
     void on_actionSchlie_en_triggered();
-
-    void keyPressEvent(QKeyEvent *);
-
     void on_actionInfo_triggered();
 
-    void on_pushButton_7_clicked();
+    void keyPressEvent(QKeyEvent *);
+    void keyReleaseEvent(QKeyEvent *);
+
+    void on_start_clicked();
 
 private:
     Ui::Steuerung *ui;
     QGraphicsScene scene;
+    Daten *data;
+    QMutexLocker *mutex;
+    Server *server;
     int rotate;
     int left;
     int right;
-    void drawScene(QGraphicsScene &scene, int height, int width, int left, int right);
+    void drawScene(int height, int width, int left, int right);
+    void fly();
+    bool key[];
+
 };
 
 #endif // STEUERUNG_H

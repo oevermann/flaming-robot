@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 TARGET = Drohne
 TEMPLATE = app
@@ -12,10 +12,16 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         steuerung.cpp \
-    dialog.cpp
+    dialog.cpp \
+    daten.cpp \
+    server.cpp \
+    serverthread.cpp
 
 HEADERS  += steuerung.h \
-    dialog.h
+    dialog.h \
+    daten.h \
+    server.h \
+    serverthread.h
 
 FORMS    += steuerung.ui \
     dialog.ui
