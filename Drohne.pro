@@ -15,13 +15,19 @@ SOURCES += main.cpp\
     dialog.cpp \
     daten.cpp \
     server.cpp \
-    serverthread.cpp
+    serverthread.cpp \
+    client.cpp \
+    clientthread.cpp \
+    updatethread.cpp
 
 HEADERS  += steuerung.h \
     dialog.h \
     daten.h \
     server.h \
-    serverthread.h
+    serverthread.h \
+    client.h \
+    clientthread.h \
+    updatethread.h
 
 FORMS    += steuerung.ui \
     dialog.ui

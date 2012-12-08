@@ -3,6 +3,8 @@
 
 #include <QThread>
 #include <QTcpSocket>
+#include <QMutex>
+//#include <QMutexLocker>
 #include "daten.h"
 
 class ServerThread : public QThread
@@ -23,6 +25,7 @@ public slots:
 private:
     Daten *data;
     QTcpSocket *socket;
+    QMutex mutex;
     int socketDescriptor;
 };
 

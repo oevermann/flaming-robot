@@ -2,6 +2,7 @@
 #define DIALOG_H
 
 #include <QDialog>
+#include "steuerung.h"
 
 
 namespace Ui {
@@ -15,7 +16,18 @@ class Dialog : public QDialog
 public:
     explicit Dialog(QWidget *parent = 0);
     ~Dialog();
-    
+
+signals:
+    void setServer(QString, int);
+
+
+private slots:
+    void setServerData();
+
+    void on_okButton_clicked();
+
+    void on_abbrechenButton_clicked();
+
 private:
     Ui::Dialog *ui;
 };

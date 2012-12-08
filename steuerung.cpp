@@ -1,19 +1,29 @@
 #include "steuerung.h"
-#include "ui_steuerung.h"
-#include "dialog.h"
+#include "ui_steuerung.h""
 #include <QDebug>
 
 Steuerung::Steuerung(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Steuerung)
 {
-    *key = new bool[9];
-    data = new Daten();
-    //mutex = new QMutexLocker[9];
-    //QObject::connect(data,SIGNAL(dataChanged()),this,SLOT(drawScene()));
+    key = new bool[9];
+    data = new Daten();//(100, 100, 100, 100);
 
     server = new Server(data);
     server->startServer();
+
+    client = new Client(data);
+    QObject::connect(client,SIGNAL(connectionError(QString)),this,SLOT(connectionError(QString)));
+
+    int height = ui->graphicsView->height();
+    int widht = ui->graphicsView->width();
+
+//    simulation = new UpdateThread(data,scene,scene,height,width,height,width);
+
+//    QObject::connect(simulation,SIGNAL(setGeschwindigkeit(QString)),this,SLOT(setGeschwindigkeit(QString)));
+//    QObject::connect(simulation,SIGNAL(setPos(QString)),this,SLOT(setPos(QString)));
+
+
 
     for (int i = 0; i < 9; i++)
     {
@@ -24,6 +34,7 @@ Steuerung::Steuerung(QWidget *parent) :
     left = (ui->graphicsView->height()/3)*2;
     right = (ui->graphicsView->height()/3)*2;
     rotate = 0;
+    //connect(server,SIGNAL(newConnection()),this,SLOT(keyPressEvent(QKeyEvent*)));
 
     drawScene(ui->graphicsView->height(), ui->graphicsView->width(),left ,right);
     ui->graphicsView->setScene(&scene);
@@ -39,6 +50,7 @@ void Steuerung::on_actionVerbindung_triggered()
 {
     Dialog verbindung;
     verbindung.setModal(true);
+    QObject::connect(&verbindung,SIGNAL(setServer(QString,int)),this,SLOT(setClient(QString,int)));
     verbindung.exec();
 }
 
@@ -54,7 +66,6 @@ void Steuerung::on_actionInfo_triggered()
 
 void Steuerung::keyPressEvent(QKeyEvent *event)
 {
-
     switch (event->key())
     {
         case Qt::Key_8:
@@ -192,23 +203,13 @@ void Steuerung::fly()
 
    if (key[4])
    {
-       //rechts
-       if((right+5) < ui->graphicsView->height()-10)
-       {
-           left -= 5;
-           right += 5;
-       }
+
        data->setYaw(5);
    }
 
    if (key[5])
    {
-       //rechts
-       if((right+5) < ui->graphicsView->height()-10)
-       {
-           left -= 5;
-           right += 5;
-       }
+
        data->setYaw(-5);
    }
 
@@ -227,15 +228,7 @@ void Steuerung::fly()
 
    if (key[8])
    {
-       int acellerate = data->getAccelerate();
-       int roll = data->getRoll();
-       int nick = data->getNick();
-       int yaw = data->getYaw();
-
-       data->setAccelerate(-acellerate + 100);
-       data->setRoll(-roll + 100);
-       data->setNick(-nick + 100);
-       data->setYaw(-yaw + 100);
+       data->reset();
    }
 
    drawScene(ui->graphicsView->height(), ui->graphicsView->width(),left ,right);
@@ -293,5 +286,17 @@ void Steuerung::drawScene(int height, int width, int l, int r)
 
 void Steuerung::on_start_clicked()
 {
+    client->connectSocket(clientAddress, port, "HLO:");
+}
 
+void Steuerung::setClient(QString address, int port)
+{
+    this->clientAddress = address;
+    this->port = port;
+}
+
+void Steuerung::connectionError(QString error)
+{
+    QMessageBox *msgBox = new QMessageBox(QMessageBox::Critical,"Error", error,QMessageBox::Ok);
+    msgBox->exec();
 }

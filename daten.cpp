@@ -4,7 +4,13 @@
 Daten::Daten(QObject *parent) :
     QObject(parent)
 {
-    Daten(100,100,100,100, parent);
+    //Daten(100, 100, 100, 100);
+    this->roll = 100;
+    this->nick = 100;
+    this->yaw = 100;
+    this->accelerate = 100;
+    anzahl = 11;
+    flugdaten = new double[anzahl];
 }
 
 Daten::Daten(int roll, int nick, int yaw, int accelerate,QObject *parent)
@@ -83,4 +89,20 @@ double Daten::getFlugdaten(int i)
 int Daten::getAnzahl()
 {
     return anzahl;
+}
+
+void Daten::reset()
+{
+    roll = 100;
+    nick = 100;
+    yaw =100;
+//    qint32 in;
+//    in = roll << 8;
+
+//    in |= yaw<< 8;
+
+//    in |= nick << 8;
+
+//    in |= accelerate<< 8;
+//    qDebug() << in;
 }
