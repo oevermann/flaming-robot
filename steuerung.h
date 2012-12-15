@@ -52,7 +52,7 @@ private:
     QGraphicsScene scenekomp;
     QGraphicsScene scenewind;
     Daten *data;
-    QMutexLocker *mutex;
+    QMutex *mutex;
     Server *server;
     Client *client;
     QString clientAddress;

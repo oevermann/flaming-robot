@@ -11,7 +11,7 @@ Daten::Daten(QObject *parent) :
     this->accelerate = 100;
     anzahl = 11;
     flugdaten = new double[anzahl];
-
+    mutex = new QMutex();
     for (int i = 0; i < anzahl; i++)
     {
         flugdaten[i] = 0;
@@ -26,7 +26,7 @@ Daten::Daten(int roll, int nick, int yaw, int accelerate,QObject *parent)
     this->accelerate = accelerate;
     anzahl = 11;
     flugdaten = new double[anzahl];
-
+    mutex = new QMutex();
     for (int i = 0; i < anzahl; i++)
     {
         flugdaten[i] = 0;
@@ -35,6 +35,7 @@ Daten::Daten(int roll, int nick, int yaw, int accelerate,QObject *parent)
 
 void Daten::setRoll(int value)
 {
+    QMutexLocker locker(mutex);
     if ((roll + value < 200) && (roll + value > 0))
         roll += value;
     qDebug() << roll;
@@ -43,6 +44,7 @@ void Daten::setRoll(int value)
 
 void Daten::setNick(int value)
 {
+    QMutexLocker locker(mutex);
     if ((nick + value < 200) && (nick + value > 0))
         nick += value;
     qDebug() << nick;
@@ -51,6 +53,7 @@ void Daten::setNick(int value)
 
 void Daten::setYaw(int value)
 {
+    QMutexLocker locker(mutex);
     if ((yaw + value < 200) && (yaw + value > 0))
         yaw += value;
     qDebug() << yaw;
@@ -59,6 +62,7 @@ void Daten::setYaw(int value)
 
 void Daten::setAccelerate(int value)
 {
+    QMutexLocker locker(mutex);
     if ((accelerate + value < 200) && (accelerate + value > 0))
         accelerate += value;
     qDebug() << accelerate;
@@ -67,42 +71,50 @@ void Daten::setAccelerate(int value)
 
 void Daten::setFlugdaten(int i, double value)
 {
+    QMutexLocker locker(mutex);
     flugdaten[i] = value;
     emit Daten::dataChanged();
 }
 
 int Daten::getRoll()
 {
+    QMutexLocker locker(mutex);
     return roll;
 }
 
 int Daten::getNick()
 {
+    QMutexLocker locker(mutex);
     return nick;
 }
 
 int Daten::getYaw()
 {
+    QMutexLocker locker(mutex);
     return yaw;
 }
 
 int Daten::getAccelerate()
 {
+    QMutexLocker locker(mutex);
     return accelerate;
 }
 
 double Daten::getFlugdaten(int i)
 {
+    QMutexLocker locker(mutex);
     return flugdaten[i];
 }
 
 int Daten::getAnzahl()
 {
+    QMutexLocker locker(mutex);
     return anzahl;
 }
 
 void Daten::reset()
 {
+    QMutexLocker locker(mutex);
     roll = 100;
     nick = 100;
     yaw =100;

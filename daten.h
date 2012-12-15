@@ -2,10 +2,13 @@
 #define DATEN_H
 
 #include <QObject>
+#include <QMutex>
+#include <QMutexLocker>
 
 class Daten : public QObject
 {
     Q_OBJECT
+    QMutex *mutex;
     int roll;
     int nick;
     int yaw;

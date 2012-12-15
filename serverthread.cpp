@@ -3,7 +3,6 @@
 ServerThread::ServerThread(int ID, Daten *data, QObject *parent):
     QThread(parent)
 {
-    mutex = new QMutex();
     this->socketDescriptor = ID;
     this->data = data;
 }
@@ -31,8 +30,6 @@ void ServerThread::run()
 void ServerThread::readyRead()
 {
     QByteArray in = socket->readAll();
-
-    QMutexLocker locker(mutex);
 
     qDebug() << socketDescriptor << "Data in" << in;
 

@@ -1,6 +1,6 @@
 #include "client.h"
 
-Client::Client(Daten *data, QObject *parent) :
+Client::Client(Daten *data,QObject *parent) :
     QObject(parent)
 {
     this->data = data;

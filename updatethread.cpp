@@ -8,15 +8,12 @@ UpdateThread::UpdateThread(Daten *data, QGraphicsScene *sceneEADI, QGraphicsScen
     this->sceneCourse = sceneCourse;
     this->sceneWind = sceneWind;
     this->stop = false;
-    mutex = new QMutex();
 }
 
 void UpdateThread::run()
 {
     while(!stop)
     {
-        QMutexLocker locker(mutex);
-        //getFlightData();
         drawEADI();
         drawCourse();
         drawWind();

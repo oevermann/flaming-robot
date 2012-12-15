@@ -12,12 +12,11 @@ class ClientThread : public QThread
 {
     Q_OBJECT
     QTcpSocket *socket;
-    QMutex *mutex;
     bool execute;
     Daten *data;
 
 public:
-    explicit ClientThread(QTcpSocket* socket,Daten *data, QObject *parent = 0);
+    explicit ClientThread(QTcpSocket* socket,Daten *data,QObject *parent = 0);
     ~ClientThread();
     void run();
     void stop();

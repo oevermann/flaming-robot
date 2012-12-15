@@ -24,7 +24,6 @@ protected:
 
 private:
     Daten *data;
-    
 };
 
 #endif // SERVER_H

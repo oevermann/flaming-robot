@@ -4,7 +4,6 @@ ClientThread::ClientThread(QTcpSocket* socket,Daten *data, QObject *parent) :
     QThread(parent)
 {
     this->data = data;
-    mutex = new QMutex();
     this->socket = socket;
     this->execute = true;
 }
@@ -20,8 +19,6 @@ void ClientThread::run()
 
 void ClientThread::sendMessage()
 {
-    QMutexLocker locker(mutex);
-
     quint32 out = 0;
     out = data->getRoll();
     out = out << 8;

@@ -33,8 +33,6 @@ Steuerung::Steuerung(QWidget *parent) :
     ui->wind_graphicsView->setScene(&scenewind);
     ui->wind_graphicsView->show();
 
-
-
     simulation = new UpdateThread(data, &scene, &scenekomp, &scenewind);
 
     QObject::connect(simulation,SIGNAL(setPos(QString)),this,SLOT(setPos(QString)));

@@ -26,7 +26,6 @@ public slots:
 private:
     Daten *data;
     QTcpSocket *socket;
-    QMutex *mutex;
     int socketDescriptor;
 };
 

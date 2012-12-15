@@ -11,9 +11,7 @@ class UpdateThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit UpdateThread(Daten *data, QGraphicsScene *sceneEADI,
-                          QGraphicsScene *sceneCourse,
-                          QGraphicsScene *sceneWind, QObject *parent = 0);
+    explicit UpdateThread(Daten *data,QGraphicsScene *sceneEADI, QGraphicsScene *sceneCourse, QGraphicsScene *sceneWind, QObject *parent = 0);
     ~UpdateThread();
     void drawEADI();
     void drawCourse();
@@ -32,7 +30,6 @@ public slots:
 private slots:
 
 private:
-    QMutex *mutex;
     QGraphicsScene *sceneEADI;
     QGraphicsScene *sceneCourse;
     QGraphicsScene *sceneWind;
