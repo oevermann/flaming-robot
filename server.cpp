@@ -10,7 +10,7 @@ Server::Server(Daten *data, QObject *parent) :
 
 void Server::startServer()
 {
-    if(!this->listen(QHostAddress::Any,1234))
+    if(!this->listen(QHostAddress::Any,1235))
     {
         qDebug() << "Could not start Server";
     }
@@ -26,4 +26,9 @@ void Server::incomingConnection(int socketDescriptor)
     ServerThread *thread = new ServerThread(socketDescriptor,data,this);
     connect(thread, SIGNAL(finished()),this,SLOT(deleteLater()));
     thread->start();
+}
+
+Server::~Server()
+{
+    delete data;
 }

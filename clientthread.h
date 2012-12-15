@@ -18,6 +18,7 @@ class ClientThread : public QThread
 
 public:
     explicit ClientThread(QTcpSocket* socket,Daten *data, QObject *parent = 0);
+    ~ClientThread();
     void run();
     void stop();
     void sendMessage();

@@ -11,6 +11,11 @@ Daten::Daten(QObject *parent) :
     this->accelerate = 100;
     anzahl = 11;
     flugdaten = new double[anzahl];
+
+    for (int i = 0; i < anzahl; i++)
+    {
+        flugdaten[i] = 0;
+    }
 }
 
 Daten::Daten(int roll, int nick, int yaw, int accelerate,QObject *parent)
@@ -21,6 +26,11 @@ Daten::Daten(int roll, int nick, int yaw, int accelerate,QObject *parent)
     this->accelerate = accelerate;
     anzahl = 11;
     flugdaten = new double[anzahl];
+
+    for (int i = 0; i < anzahl; i++)
+    {
+        flugdaten[i] = 0;
+    }
 }
 
 void Daten::setRoll(int value)
@@ -96,13 +106,4 @@ void Daten::reset()
     roll = 100;
     nick = 100;
     yaw =100;
-//    qint32 in;
-//    in = roll << 8;
-
-//    in |= yaw<< 8;
-
-//    in |= nick << 8;
-
-//    in |= accelerate<< 8;
-//    qDebug() << in;
 }

@@ -11,6 +11,7 @@ class Server : public QTcpServer
     Q_OBJECT
 public:
     explicit Server(Daten *data, QObject *parent = 0);
+    ~Server();
     //explicit Server(Daten *data);
     void startServer();
 

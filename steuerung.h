@@ -25,8 +25,7 @@ public:
 
 public slots:
     void connectionError(QString error);
-//    void setPos(QString pos);
-//    void setGeschwindigkeit(QString speed);
+
 
 private slots:
     void on_actionVerbindung_triggered();
@@ -40,9 +39,18 @@ private slots:
 
     void setClient(QString address, int port);
 
+    void setPos(QString pos);
+    void setAirspeed(QString airspeed);
+    void setGroundspeed(QString groundspeed);
+    void setHeight(QString height);
+
+    void on_stop_clicked();
+
 private:
     Ui::Steuerung *ui;
     QGraphicsScene scene;
+    QGraphicsScene scenekomp;
+    QGraphicsScene scenewind;
     Daten *data;
     QMutexLocker *mutex;
     Server *server;

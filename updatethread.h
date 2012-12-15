@@ -11,33 +11,32 @@ class UpdateThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit UpdateThread(Daten *data, QGraphicsScene *sceneEADI, QGraphicsScene *sceneCourse,int heightEADI, int widthEADI, int heightCourse, int widthCourse, QObject *parent = 0);
-    void getFlightData();
+    explicit UpdateThread(Daten *data, QGraphicsScene *sceneEADI,
+                          QGraphicsScene *sceneCourse,
+                          QGraphicsScene *sceneWind, QObject *parent = 0);
+    ~UpdateThread();
     void drawEADI();
     void drawCourse();
+    void drawWind();
     void run();
     
 signals:
     void setPos(QString pos);
-    void setGeschwindigkeit(QString speed);
-    void dataChanged();
+    void setAirspeed(QString airspeed);
+    void setGroundspeed(QString groundspeed);
+    void setHeight(QString height);
     
 public slots:
     void stopSimulation();
 
 private slots:
-    void update();
 
 private:
-    double *flightdata;
     QMutex *mutex;
     QGraphicsScene *sceneEADI;
     QGraphicsScene *sceneCourse;
+    QGraphicsScene *sceneWind;
     Daten *data;
-    int heightEADI;
-    int widthEADI;
-    int heightCourse;
-    int widthCourse;
     bool stop;
     
 };

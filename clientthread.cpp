@@ -4,7 +4,7 @@ ClientThread::ClientThread(QTcpSocket* socket,Daten *data, QObject *parent) :
     QThread(parent)
 {
     this->data = data;
-    //mutex = new mutex;
+    mutex = new QMutex();
     this->socket = socket;
     this->execute = true;
 }
@@ -21,15 +21,32 @@ void ClientThread::run()
 void ClientThread::sendMessage()
 {
     QMutexLocker locker(mutex);
-    QString message1 = "Hallo";
+
+    quint32 out = 0;
+    out = data->getRoll();
+    out = out << 8;
+    out |= data->getNick();
+    out = out << 8;
+    out |= data->getYaw();
+    out = out << 8;
+    out |= data->getAccelerate();
+    qDebug() << out;
+
     QByteArray *block = new QByteArray;
-    block->append(message1);
-    socket->write(*block);
+    block-> setNum(out);
+    socket-> write(*block);
+    socket-> flush();
+
     delete block;
 }
 
 void ClientThread::stop()
 {
     execute = false;
+}
+
+ClientThread::~ClientThread()
+{
+    delete data;
 }
 

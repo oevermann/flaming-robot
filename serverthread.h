@@ -13,6 +13,7 @@ class ServerThread : public QThread
 
 public:
     explicit ServerThread(int ID,Daten *data, QObject *parent = 0);
+    ~ServerThread();
     void run();
     
 signals:
@@ -25,7 +26,7 @@ public slots:
 private:
     Daten *data;
     QTcpSocket *socket;
-    QMutex mutex;
+    QMutex *mutex;
     int socketDescriptor;
 };
 

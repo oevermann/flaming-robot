@@ -3,6 +3,7 @@
 ServerThread::ServerThread(int ID, Daten *data, QObject *parent):
     QThread(parent)
 {
+    mutex = new QMutex();
     this->socketDescriptor = ID;
     this->data = data;
 }
@@ -31,7 +32,7 @@ void ServerThread::readyRead()
 {
     QByteArray in = socket->readAll();
 
-    //QMutexLocker locker(&mutex);
+    QMutexLocker locker(mutex);
 
     qDebug() << socketDescriptor << "Data in" << in;
 
@@ -123,10 +124,6 @@ void ServerThread::readyRead()
         //close + optionale Nachricht
         qDebug() << ein.mid(4, ein.length()-1).toDouble();
     }
-
-
-    //socket->write(data);
-
 }
 
 void ServerThread::disconnected()
@@ -135,4 +132,9 @@ void ServerThread::disconnected()
 
     socket->deleteLater();
     exit(0);
+}
+
+ServerThread::~ServerThread()
+{
+    delete data;
 }

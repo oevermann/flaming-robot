@@ -7,11 +7,13 @@ Client::Client(Daten *data, QObject *parent) :
     tcpSocket = new QTcpSocket(this);
     connected = false;
     connect(this,SIGNAL(socketConnected()),this,SLOT(sendMessage()));
+
 }
 
 Client::~Client()
 {
     tcpSocket->close();
+    delete data;
     delete tcpSocket;
 }
 
@@ -27,6 +29,9 @@ void Client::connectSocket(QString address, int port, QString name)
     {
 
     }
+
+    tcpSocket->waitForConnected(500);
+
     if(tcpSocket->state() == QAbstractSocket::ConnectedState)
     {
         connected = true;
@@ -52,6 +57,8 @@ void Client::sendMessage()
 void Client::disconnect()
 {
     thread->stop();
+    tcpSocket->disconnectFromHost();
+    tcpSocket->close();
 }
 
 

@@ -1,98 +1,101 @@
 #include "updatethread.h"
 
-UpdateThread::UpdateThread(Daten *data, QGraphicsScene *sceneEADI, QGraphicsScene *sceneCourse,int heightEADI, int widthEADI, int heightCourse, int widthCourse, QObject *parent) :
+UpdateThread::UpdateThread(Daten *data, QGraphicsScene *sceneEADI, QGraphicsScene *sceneCourse, QGraphicsScene *sceneWind,QObject *parent) :
     QThread(parent)
 {
     this->data = data;
     this->sceneEADI = sceneEADI;
     this->sceneCourse = sceneCourse;
-    this->heightEADI = heightEADI;
-    this->widthEADI = widthEADI;
-    this->heightCourse = heightCourse;
-    this->widthCourse = widthCourse;
-    this->flightdata = new double[data->getAnzahl()];
+    this->sceneWind = sceneWind;
     this->stop = false;
-
-    QObject::connect(this,SIGNAL(dataChanged()),this,SLOT(update()));
+    mutex = new QMutex();
 }
 
 void UpdateThread::run()
 {
     while(!stop)
     {
-        getFlightData();
-        msleep(500);
+        QMutexLocker locker(mutex);
+        //getFlightData();
+        drawEADI();
+        drawCourse();
+        drawWind();
+        emit setPos(QString::number(data->getFlugdaten(0)) + " Grad " + QString::number(data->getFlugdaten(0)) + "Grad" );
+        emit setAirspeed(QString::number(data->getFlugdaten(7)) + " kn");
+        emit setGroundspeed(QString::number(data->getFlugdaten(8)) + " kn");
+        emit setHeight(QString::number(data->getFlugdaten(6)) + " kn");
+        msleep(50);
     }
 }
-
-void UpdateThread::getFlightData()
-{
-    QMutexLocker locker(mutex);
-    for (int i = 0; i < data->getAnzahl(); i++)
-    {
-        flightdata[i] = data->getFlugdaten(i);
-    }
-    emit dataChanged();
-}
-
-void UpdateThread::update()
-{
-    drawEADI();
-    drawCourse();
-    emit setPos("test1");
-    emit setGeschwindigkeit("test2");
-}
-
 
 void UpdateThread::drawEADI()
 {
+
     sceneEADI->clear();
-    int l = 10;
-    int r = 10;
+    sceneEADI->setSceneRect(0, -180,100 ,360);
+
+    QBrush background(Qt::blue);
+    sceneEADI->setBackgroundBrush(background);
 
     QGraphicsPolygonItem *polygonItem = new QGraphicsPolygonItem(
-                QPolygonF( QVector<QPointF>() << QPointF( 0, 0 )
-                           << QPointF( 0, l ) << QPointF( widthEADI-10, r )
-                           << QPointF( widthEADI-10, 0 ) ), 0, sceneEADI );
-    polygonItem->setBrush( Qt::blue );
-
-    QGraphicsPolygonItem *polygonItem2 = new QGraphicsPolygonItem(
-                QPolygonF( QVector<QPointF>() << QPointF( 0, l )
-                           << QPointF( 0, heightEADI-10 ) << QPointF( widthEADI-10, heightEADI-10 )
-                           << QPointF( widthEADI-10, r ) ), 0, sceneEADI );
-    polygonItem2->setBrush( Qt::green );
-
-
-    QGraphicsLineItem *lineItem = new QGraphicsLineItem(0, l, widthEADI-10, r, 0, sceneEADI );
-    lineItem->setPen(QPen(Qt::white));
+                QPolygonF( QVector<QPointF>() << QPointF( -360, -(data->getFlugdaten(2)) )
+                           << QPointF( -360, 360 ) << QPointF( 360, 360 )
+                           << QPointF( 360, -(data->getFlugdaten(2)) ) ), 0, sceneEADI );
+    polygonItem->setBrush( Qt::green );
+    polygonItem->rotate(data->getFlugdaten(3));
 }
 
 void UpdateThread::drawCourse()
 {
+    sceneCourse->setSceneRect(-25,-25,50 ,50);
+
     sceneCourse->clear();
-    int l = 10;
-    int r = 10;
-
     QGraphicsPolygonItem *polygonItem = new QGraphicsPolygonItem(
-                QPolygonF( QVector<QPointF>() << QPointF( 0, 0 )
-                           << QPointF( 0, l ) << QPointF( widthCourse-10, r )
-                           << QPointF( widthCourse-10, 0 ) ), 0, sceneCourse );
+                QPolygonF( QVector<QPointF>() << QPointF( -10, -20)
+                           << QPointF( -5, -20 ) << QPointF( -5, +30 )
+                           << QPointF( +5, +30 ) << QPointF( +5, -20 )
+                           << QPointF( +10, -20 ) << QPointF( 0, -30) ), 0, sceneCourse );
     polygonItem->setBrush( Qt::blue );
+    polygonItem->rotate(data->getFlugdaten(4));
 
-    QGraphicsPolygonItem *polygonItem2 = new QGraphicsPolygonItem(
-                QPolygonF( QVector<QPointF>() << QPointF( 0, l )
-                           << QPointF( 0, heightCourse-10 ) << QPointF( widthCourse-10, heightCourse-10 )
-                           << QPointF( widthCourse-10, r ) ), 0, sceneCourse );
-    polygonItem2->setBrush( Qt::green );
+    QGraphicsPolygonItem *polygonItem1 = new QGraphicsPolygonItem(
+                QPolygonF( QVector<QPointF>() << QPointF( -10, -20)
+                           << QPointF( -5, -20 ) << QPointF( -5, +30 )
+                           << QPointF( +5, +30 ) << QPointF( +5, -20 )
+                           << QPointF( +10, -20 ) << QPointF( 0, -30) ), 0, sceneCourse );
+    polygonItem1->setBrush( Qt::red );
+    polygonItem1->rotate(data->getFlugdaten(5));
+}
 
+void UpdateThread::drawWind()
+{
+    sceneWind->setSceneRect(-25,-25,50 ,50);
 
-    QGraphicsLineItem *lineItem = new QGraphicsLineItem(0, l, widthCourse-10, r, 0, sceneCourse );
-    lineItem->setPen(QPen(Qt::white));
+    sceneWind->clear();
+    QGraphicsPolygonItem *polygonItem = new QGraphicsPolygonItem(
+                QPolygonF( QVector<QPointF>() << QPointF( -10, -20)
+                           << QPointF( -5, -20 ) << QPointF( -5, +30 )
+                           << QPointF( +5, +30 ) << QPointF( +5, -20 )
+                           << QPointF( +10, -20 ) << QPointF( 0, -30) ), 0, sceneWind );
+    polygonItem->setBrush( Qt::blue );
+    polygonItem->rotate(data->getFlugdaten(9));
+    QString text = QString::number(data->getFlugdaten(10));
+    text = text + " kn";
+    QGraphicsTextItem *textItem = new QGraphicsTextItem(text, 0, sceneWind);
+    textItem->setPos(-20,30);
 }
 
 void UpdateThread::stopSimulation()
 {
     stop = true;
+}
+
+UpdateThread::~UpdateThread()
+{
+    delete sceneEADI;
+    delete sceneCourse;
+    delete sceneWind;
+    delete data;
 }
 
 

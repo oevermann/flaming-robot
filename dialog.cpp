@@ -7,6 +7,8 @@ Dialog::Dialog(QWidget *parent) :
 {
 
     ui->setupUi(this);
+    ui->clientAdress->setText("localhost");
+    ui->clientPort->setText("1234");
 }
 
 Dialog::~Dialog()
