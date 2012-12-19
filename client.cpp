@@ -1,13 +1,13 @@
 #include "client.h"
 
+//nimmt das datenobjekt entgegen und legt einen tcpSocket an
 Client::Client(Daten *data,QObject *parent) :
     QObject(parent)
 {
     this->data = data;
     tcpSocket = new QTcpSocket(this);
     connected = false;
-    connect(this,SIGNAL(socketConnected()),this,SLOT(sendMessage()));
-
+    QObject::connect(this,SIGNAL(socketConnected()),this,SLOT(sendMessage()));
 }
 
 Client::~Client()
@@ -17,8 +17,8 @@ Client::~Client()
     delete tcpSocket;
 }
 
-
-void Client::connectSocket(QString address, int port, QString name)
+//Verbindungsaufbau zu host unter Adresse: address und mit dem Port: port
+void Client::connectSocket(QString address, int port)
 {
     tcpSocket->abort();
     try
@@ -32,7 +32,7 @@ void Client::connectSocket(QString address, int port, QString name)
 
     tcpSocket->waitForConnected(500);
 
-    if(tcpSocket->state() == QAbstractSocket::ConnectedState)
+    if(tcpSocket->state() == QTcpSocket::ConnectedState)
     {
         connected = true;
         emit socketConnected();
@@ -41,9 +41,9 @@ void Client::connectSocket(QString address, int port, QString name)
     {
         emit connectionError("Es konnte keine Verbindung zum Server aufgebaut werden.");
     }
-
 }
 
+//startet den Thread zum senden der Steuerdaten
 void Client::sendMessage()
 {
     if (connected)
@@ -54,6 +54,7 @@ void Client::sendMessage()
     }
 }
 
+//schließt die Verbindung zum Host
 void Client::disconnect()
 {
     thread->stop();

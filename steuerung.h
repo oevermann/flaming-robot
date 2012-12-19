@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QKeyEvent>
 #include <QtGui>
-#include <QMutexLocker>
 #include "daten.h"
 #include "dialog.h"
 #include "server.h"
@@ -39,10 +38,10 @@ private slots:
 
     void setClient(QString address, int port);
 
-    void setPos(QString pos);
-    void setAirspeed(QString airspeed);
-    void setGroundspeed(QString groundspeed);
-    void setHeight(QString height);
+    void setPos(const QString &pos);
+    void setAirspeed(const QString &airspeed);
+    void setGroundspeed(const QString &groundspeed);
+    void setHeight(const QString &height);
 
     void on_stop_clicked();
 
@@ -52,19 +51,13 @@ private:
     QGraphicsScene scenekomp;
     QGraphicsScene scenewind;
     Daten *data;
-    QMutex *mutex;
     Server *server;
     Client *client;
-    QString clientAddress;
     UpdateThread *simulation;
+    QString clientAddress;
     int port;
-    int rotate;
-    int left;
-    int right;
-    void drawScene(int height, int width, int left, int right);
-    void fly();
     bool *key;
-
+    void setControlData();
 };
 
 #endif // STEUERUNG_H

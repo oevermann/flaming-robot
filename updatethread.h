@@ -19,10 +19,10 @@ public:
     void run();
     
 signals:
-    void setPos(QString pos);
-    void setAirspeed(QString airspeed);
-    void setGroundspeed(QString groundspeed);
-    void setHeight(QString height);
+    void setPos(const QString &pos);
+    void setAirspeed(const QString &airspeed);
+    void setGroundspeed(const QString &groundspeed);
+    void setHeight(const QString &height);
     
 public slots:
     void stopSimulation();
@@ -35,7 +35,12 @@ private:
     QGraphicsScene *sceneWind;
     Daten *data;
     bool stop;
-    
+    double oldpit;
+    double oldbnk;
+    double oldthg;
+    double oldtcs;
+    double oldwve;
+    double oldwsp;
 };
 
 #endif // UPDATETHREAD_H

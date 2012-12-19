@@ -2,12 +2,16 @@
 #include "ui_steuerung.h"
 #include <QDebug>
 
+/**
+    Die Klasse erstellt den Hauptframe und intialisiert alle benötigten Variablen
+*/
+
 Steuerung::Steuerung(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Steuerung)
 {
     key = new bool[9];
-    data = new Daten();//(100, 100, 100, 100);
+    data = new Daten();
 
     server = new Server(data);
     server->startServer();
@@ -24,7 +28,6 @@ Steuerung::Steuerung(QWidget *parent) :
     ui->setupUi(this);
 
     ui->graphicsView->setScene(&scene);
-    ui->graphicsView->setSceneRect(0, -180,100 ,360);
     ui->graphicsView->show();
 
     ui->komp_graphicsView->setScene(&scenekomp);
@@ -35,18 +38,21 @@ Steuerung::Steuerung(QWidget *parent) :
 
     simulation = new UpdateThread(data, &scene, &scenekomp, &scenewind);
 
-    QObject::connect(simulation,SIGNAL(setPos(QString)),this,SLOT(setPos(QString)));
-    QObject::connect(simulation,SIGNAL(setAirspeed(QString)),this,SLOT(setAirspeed(QString)));
-    QObject::connect(simulation,SIGNAL(setGroundspeed(QString)),this,SLOT(setGroundspeed(QString)));
-    QObject::connect(simulation,SIGNAL(setHeight(QString)),this,SLOT(setHeight(QString)));
+    QObject::connect(simulation,SIGNAL(setPos(const QString &)),this,SLOT(setPos(const QString &)));
+    QObject::connect(simulation,SIGNAL(setAirspeed(const QString &)),this,SLOT(setAirspeed(const QString &)));
+    QObject::connect(simulation,SIGNAL(setGroundspeed(const QString &)),this,SLOT(setGroundspeed(const QString &)));
+    QObject::connect(simulation,SIGNAL(setHeight(const QString &)),this,SLOT(setHeight(const QString &)));
 }
+
 
 Steuerung::~Steuerung()
 {
     delete ui;
+    //delete[] data;
     delete data;
 }
 
+//öffnet den Dialog für den Verbindungsaufbau
 void Steuerung::on_actionVerbindung_triggered()
 {
     Dialog verbindung;
@@ -55,6 +61,7 @@ void Steuerung::on_actionVerbindung_triggered()
     verbindung.exec();
 }
 
+//beendet das Programm
 void Steuerung::on_actionSchlie_en_triggered()
 {
     close();
@@ -65,57 +72,63 @@ void Steuerung::on_actionInfo_triggered()
 
 }
 
+//beendet die Simulation
 void Steuerung::on_start_clicked()
 {
-    client->connectSocket(clientAddress, port, "HLO:");
+    client->connectSocket(clientAddress, port);
     simulation->start();
-//    scene.moveToThread(simulation);
-//    scenekomp.moveToThread(simulation);
-//    scenewind.moveToThread(simulation);
 }
 
 void Steuerung::on_stop_clicked()
 {
-    client->disconnect();
+    client-disconnect();
     simulation->quit();
 }
 
+//ist ein slot der von dem Signal setServer der Klasse Dialog aufgerufen wird
+//und legt die Verbindungsdaten zum Simulator fest
 void Steuerung::setClient(QString address, int port)
 {
     this->clientAddress = address;
     this->port = port;
 }
 
+
+//ist ein slot der von dem Signal connectionError der Klasse client aufgerufen wird
+//und öffnet eine MessageBox bei fehlerhaftem Verbindungsaufbau
 void Steuerung::connectionError(QString error)
 {
     QMessageBox *msgBox = new QMessageBox(QMessageBox::Critical,"Error", error,QMessageBox::Ok);
     msgBox->exec();
 }
 
-void Steuerung::setPos(QString pos)
+//ändert den Text im Positions textfeld
+void Steuerung::setPos(const QString &pos)
 {
     ui->position_text->setText(pos);
 }
 
-void Steuerung::setAirspeed(QString airspeed)
+//ändert den Text im Geschwindigkeit über Luft textfeld
+void Steuerung::setAirspeed(const QString &airspeed)
 {
     ui->airspeed_text->setText(airspeed);
 }
 
-void Steuerung::setGroundspeed(QString groundspeed)
+//ändert den Text im Geschwindigkeit über Grund textfeld
+void Steuerung::setGroundspeed(const QString &groundspeed)
 {
     ui->groundspeed_text->setText(groundspeed);
 }
 
-void Steuerung::setHeight(QString height)
+//ändert den Text im Höhen textfeld
+void Steuerung::setHeight(const QString &height)
 {
     ui->height_text->setText(height);
 }
 
-
 /*
   --------------------------------------------------------------------------------------------------
-  Tastaturabfrage und Daten aendern
+  Tastaturabfrage und RuderDaten aendern
   --------------------------------------------------------------------------------------------------
 */
 
@@ -160,7 +173,7 @@ void Steuerung::keyPressEvent(QKeyEvent *event)
             break;
     }
 
-    fly();
+    setControlData();
 }
 
 void Steuerung::keyReleaseEvent(QKeyEvent *event)
@@ -204,78 +217,53 @@ void Steuerung::keyReleaseEvent(QKeyEvent *event)
             break;
     }
 
-    fly();
+    setControlData();
 }
 
-void Steuerung::fly()
+void Steuerung::setControlData()
 {
-   scene.clear();
-
    if (key[0])
    {
        //hoch
-       if((left+5) < ui->graphicsView->height()-5 && (right+5) < ui->graphicsView->height()-5)
-       {
-           left += 5;
-           right += 5;
-       }
-       data->setNick(5);
+       data->setNick(1);
    }
 
    if (key[1])
    {
        //runter
-       if((left-5) > 30 && (left-5) > 30)
-       {
-           left -= 5;
-           right -= 5;
-       }
-       data->setNick(-5);
+       data->setNick(-1);
    }
 
    if (key[2])
    {
        //links
-       if((left+5) < ui->graphicsView->height()-10)
-       {
-            left += 5;
-            right -= 5;
-       }
-       data->setRoll(5);
+       data->setRoll(1);
    }
 
    if (key[3])
    {
        //rechts
-       if((right+5) < ui->graphicsView->height()-10)
-       {
-           left -= 5;
-           right += 5;
-       }
-       data->setRoll(-5);
+       data->setRoll(-1);
    }
 
    if (key[4])
    {
-
-       data->setYaw(5);
+       data->setYaw(1);
    }
 
    if (key[5])
    {
-
-       data->setYaw(-5);
+       data->setYaw(-1);
    }
 
    if (key[6])
    {
-       data->setAccelerate(5);
-
+       data->setAccelerate(1);
    }
 
    if (key[7])
    {
-       data->setAccelerate(-5);
+       data->setAccelerate(-1);
    }
 
    if (key[8])

@@ -12,12 +12,7 @@ class Server : public QTcpServer
 public:
     explicit Server(Daten *data, QObject *parent = 0);
     ~Server();
-    //explicit Server(Daten *data);
     void startServer();
-
-signals:
-    
-public slots:
 
 protected:
     void incomingConnection(int socketDescriptor);

@@ -9,15 +9,11 @@
 class Client : public QObject
 {
     Q_OBJECT
-    QTcpSocket *tcpSocket;
-    ClientThread *thread;
-    Daten *data;
-    bool connected;
+
 public:
     explicit Client(Daten* data,QObject *parent = 0);
     ~Client();
-    void connectSocket(QString address, int port, QString name);
-
+    void connectSocket(QString address, int port);
 
 signals:
     void socketConnected();
@@ -28,6 +24,12 @@ public slots:
 
 private slots:
     void sendMessage();
+
+private:
+    QTcpSocket *tcpSocket;
+    ClientThread *thread;
+    Daten *data;
+    bool connected;
 };
 
 #endif // CLIENT_H

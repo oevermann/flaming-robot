@@ -3,17 +3,12 @@
 
 #include <QThread>
 #include <QTcpSocket>
-#include <QMutex>
-#include <QMutexLocker>
 #include "daten.h"
 
 
 class ClientThread : public QThread
 {
     Q_OBJECT
-    QTcpSocket *socket;
-    bool execute;
-    Daten *data;
 
 public:
     explicit ClientThread(QTcpSocket* socket,Daten *data,QObject *parent = 0);
@@ -22,10 +17,10 @@ public:
     void stop();
     void sendMessage();
 
-signals:
-
-public slots:
-
+private:
+    QTcpSocket *socket;
+    bool execute;
+    Daten *data;
 };
 
 #endif // CLIENTTHREAD_H

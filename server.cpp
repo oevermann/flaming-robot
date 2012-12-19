@@ -8,6 +8,7 @@ Server::Server(Daten *data, QObject *parent) :
     this->data = data;
 }
 
+//prüft ob der port bereits belegt ist, wenn nicht wird der port blockiert und der server horcht auf diesem port
 void Server::startServer()
 {
     if(!this->listen(QHostAddress::Any,1235))
@@ -19,7 +20,8 @@ void Server::startServer()
         qDebug() << "Listening";
     }
 }
-
+//bei Verbindungsaufbau wird diese Funktion aufgerufen diese startet einen Thread der die einkommenden Daten entgegennimmt und
+//verarbeitet
 void Server::incomingConnection(int socketDescriptor)
 {
     qDebug() << socketDescriptor << "Connecting";

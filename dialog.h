@@ -20,12 +20,9 @@ public:
 signals:
     void setServer(QString, int);
 
-
 private slots:
     void setServerData();
-
     void on_okButton_clicked();
-
     void on_abbrechenButton_clicked();
 
 private:

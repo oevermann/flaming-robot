@@ -8,13 +8,6 @@
 class Daten : public QObject
 {
     Q_OBJECT
-    QMutex *mutex;
-    int roll;
-    int nick;
-    int yaw;
-    int accelerate;
-    double *flugdaten;
-    int anzahl;
 
 public:
     explicit Daten(QObject *parent = 0);
@@ -33,13 +26,22 @@ public:
     int getAccelerate();
     double getFlugdaten(int i);
     int getAnzahl();
-
     
 signals:
     void dataChanged();
-public slots:
 
-    
+private:
+    QMutex *rollmutex;
+    QMutex *yawmutex;
+    QMutex *nickmutex;
+    QMutex *acceleratemutex;
+    QMutex *flightdatamutex;
+    int roll;
+    int nick;
+    int yaw;
+    int accelerate;
+    double *flugdaten;
+    int anzahl;
 };
 
 #endif // DATEN_H

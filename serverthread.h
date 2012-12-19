@@ -3,8 +3,6 @@
 
 #include <QThread>
 #include <QTcpSocket>
-#include <QMutex>
-//#include <QMutexLocker>
 #include "daten.h"
 
 class ServerThread : public QThread
